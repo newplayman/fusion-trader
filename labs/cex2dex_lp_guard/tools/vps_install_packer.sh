@@ -37,7 +37,7 @@ cleanup() { rm -rf "$TMP"; }
 trap cleanup EXIT
 
 # Read-only sidecar copy: files modified in last 70 minutes (exclude segments dir)
-find "$BASE" -type f -mmin -70 ! -path "$OUT/*" -exec cp --parents {} "$TMP/" \\;
+find "$BASE" -type f -mmin -70 ! -path "$OUT/*" -exec cp --parents {} "$TMP/" \;
 
 if [ "$(find "$TMP" -type f | wc -l)" -eq 0 ]; then
   exit 0
@@ -99,4 +99,3 @@ echo "installed=$SCRIPT"
 VPS_EOF
 
 echo "vps_install_ok=1"
-
