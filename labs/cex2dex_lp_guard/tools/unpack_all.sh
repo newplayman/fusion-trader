@@ -12,7 +12,14 @@ for f in "$SEG"/*.tar.zst "$SEG"/*.tar.gz "$SEG"/*.tgz "$SEG"/*.tar; do
   tgt="$OUT/$name"
   mkdir -p "$tgt"
   if [[ "$f" == *.tar.zst ]]; then
-    tar --use-compress-program=unzstd -xf "$f" -C "$tgt"
+    if command -v unzstd >/dev/null 2>&1; then
+      tar --use-compress-program=unzstd -xf "$f" -C "$tgt"
+    elif command -v zstd >/dev/null 2>&1; then
+      zstd -d -c "$f" | tar -xf - -C "$tgt"
+    else
+      echo "ERROR: need 'unzstd' or 'zstd' to unpack: $f" >&2
+      exit 2
+    fi
   elif [[ "$f" == *.tar.gz || "$f" == *.tgz ]]; then
     tar -xzf "$f" -C "$tgt"
   else
